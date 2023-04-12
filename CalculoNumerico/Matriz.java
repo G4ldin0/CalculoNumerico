@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public class Matriz{
    private ArrayList<double[]> matriz = new ArrayList<double[]>();
-   private int coluna;
-   private int linha;
+   private int coluna; //vertical
+   private int linha; //horizontal
 
 
    //CONSTRUTORES
@@ -83,19 +83,55 @@ public class Matriz{
       }
    }
 
-   public double Linha() { return linha; }
+   public int Linha() { return linha; }
 
-   public double Coluna() { return coluna; }
+   public int Coluna() { return coluna; }
 
    public void ExibirMatriz(){
       System.out.println("Matriz: ");
       System.out.println("[");
-      for(int i = 0; i < matriz.size(); i++){
-         for(int j = 0; j < matriz.get(i).length; j++){
+      for(int i = 0; i < coluna; i++){
+         for(int j = 0; j < linha; j++){
             System.out.print(matriz.get(i)[j] + ", ");
          }
          System.out.println();
       }
       System.out.println("]");
+   }
+
+   public double NormaInfinita(){
+      double value = 0;
+
+      if(linha == 1)
+      {
+         int i = 0;
+         value = Math.abs(matriz.get(0)[0]);
+         do{
+            value = Math.max(value, Math.abs(i));
+            i++;
+         }
+         while(i < coluna);
+      } 
+      else 
+      {
+
+         for(int j = 0; j < linha; j++){
+            value += matriz.get(0)[j];
+         }
+         
+         for(int i = 0; i < coluna; i++)
+         {
+         double placeholder = 0;
+            for(int j = 0; j < linha; j++){
+               placeholder += matriz.get(i)[j];
+            }
+
+            value = Math.max(value, placeholder);
+
+         }
+
+      }
+
+      return value;
    }
 }

@@ -99,6 +99,35 @@ public class OperacoesMatriciais{
       return retorno;
    }
 
+
+   public static Matriz GaussJacobi(Matriz origem){
+      Matriz value = new Matriz(1,origem.Coluna());
+
+      Matriz iteracao1 = new Matriz(2, origem.Coluna());
+      Matriz iteracao2 = new Matriz(1, origem.Coluna());
+      Matriz convergencia = new Matriz(1, origem.Coluna());
+      Matriz[] iteracoes = new Matriz[]{iteracao1, iteracao2};
+
+      for(int i = 0; i < origem.Coluna(); i++){
+         iteracoes[0].set(new double[]{(1/origem.get(i, i)) * origem.get(i,3),1},i); //matriz k
+      }
+
+      int i = 0;
+      
+      do{
+         i = (i + 1) % 2;
+         for(int j = 0; j < origem.Coluna(); j++){
+            iteracoes[i].set(new double[]{(1/origem.get(j, j)) * origem.get(j,3),1},j); //matriz k+1
+
+            // convergencia.set(Math.abs(iteracoes[i].get(0,j)) - Math.abs(iteracoes[(i+1)%2].get(0,j)), 0, j);
+         }
+         // i = Math.abs(iteracoes[i].get(0,j)) - Math.abs(iteracoes[(i+1)%2].get(0,j))
+      } while(convergencia.NormaInfinita() / iteracoes[i].NormaInfinita() < 0.05);
+
+      return iteracoes[0];
+   }
+
+
    public static double SistemaMatricial(Matriz origem){
       double result = 0;
       return result;
