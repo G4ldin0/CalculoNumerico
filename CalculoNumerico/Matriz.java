@@ -54,24 +54,14 @@ public class Matriz{
 
    public double[] get(int col){ return matriz.get(col);}
 
-   public boolean set(double value, int col, int row){
-      if(col > coluna || row > linha){
-         return false;
-      } else{
-         double[] setup = new double[linha];
+   public boolean set(double value, int col, int row){      
+      double[] setup = matriz.get(col);
 
-         for(int i = 0; i < coluna; i++)
-         {
-            if(i == row)
-               setup[i] = value;
-            else
-               setup[i] = matriz.get(col)[i];
-            
-         } 
-         matriz.set(col, setup);
+      setup[row] = value;
 
-         return true;
-      }
+      matriz.set(col, setup);
+
+      return true;
    }
 
    public boolean set(double[] value, int col){
@@ -104,10 +94,10 @@ public class Matriz{
 
       if(linha == 1)
       {
-         int i = 0;
+         int i = 1;
          value = Math.abs(matriz.get(0)[0]);
          do{
-            value = Math.max(value, Math.abs(i));
+            value = Math.max(value, Math.abs(matriz.get(i)[0]));
             i++;
          }
          while(i < coluna);
@@ -122,11 +112,11 @@ public class Matriz{
          for(int i = 0; i < coluna; i++)
          {
          double placeholder = 0;
-            for(int j = 0; j < linha; j++){
+            for(int j = 1; j < linha; j++){
                placeholder += matriz.get(i)[j];
             }
 
-            value = Math.max(value, placeholder);
+         value = Math.max(value, placeholder);
 
          }
 

@@ -27,7 +27,8 @@ public class OperacoesMatriciais{
    }
 
    //Matriz "U" equivale ao resultado da eliminação gaussiana
-   public static Matriz[] DecomposicaoLU(Matriz origem){
+   public static Matriz[] DecomposicaoLU(Matriz origem)
+   {
 
       Matriz L = new Matriz((int)origem.Linha());
       Matriz U = origem;
@@ -64,7 +65,8 @@ public class OperacoesMatriciais{
 
    }
 
-   public static Matriz DecomposicaoCholensky(Matriz origem){
+   public static Matriz DecomposicaoCholensky(Matriz origem)
+   {
       Matriz retorno = new Matriz((int)origem.Linha());
       
       // metodo sem laço de repetição para matriz 3x3
@@ -101,34 +103,56 @@ public class OperacoesMatriciais{
 
 
    public static Matriz GaussJacobi(Matriz origem){
-      Matriz value = new Matriz(1,origem.Coluna());
 
-      Matriz iteracao1 = new Matriz(2, origem.Coluna());
-      Matriz iteracao2 = new Matriz(1, origem.Coluna());
-      Matriz convergencia = new Matriz(1, origem.Coluna());
-      Matriz[] iteracoes = new Matriz[]{iteracao1, iteracao2};
+      Matriz[] iteracao = new Matriz[]{new Matriz(1,origem.Coluna()), new Matriz(1,origem.Coluna())};
+      Matriz parada = new Matriz(1, origem.Coluna());
 
-      for(int i = 0; i < origem.Coluna(); i++){
-         iteracoes[0].set(new double[]{(1/origem.get(i, i)) * origem.get(i,3),1},i); //matriz k
-      }
+      //iteração 0
+      iteracao[0].set(origem.get(0,3) / origem.get(0,0), 0,0);
+      iteracao[0].set(origem.get(1,3) / origem.get(1,1), 1,0);
+      iteracao[0].set(origem.get(2,3) / origem.get(2,2), 2,0);
 
-      int i = 0;
-      
-      do{
-         i = (i + 1) % 2;
-         for(int j = 0; j < origem.Coluna(); j++){
-            iteracoes[i].set(new double[]{(1/origem.get(j, j)) * origem.get(j,3),1},j); //matriz k+1
+      //iterações seguintes
+      int k = 0;
+      do
+      {
+         k = (k+1)%2;
 
-            // convergencia.set(Math.abs(iteracoes[i].get(0,j)) - Math.abs(iteracoes[(i+1)%2].get(0,j)), 0, j);
+         for(int i = 0; i < origem.Coluna(); i++) //formação da nova matriz
+         {
+            double valor = origem.get(i,origem.Coluna() );
+
+            System.out.print(valor); //DEBUG
+            for(int j = 1; j < origem.Coluna(); j++)
+            {
+               System.out.print(" - " + iteracao[(k+1)%2].get((i+j)%origem.Coluna(), 0) + " * " + origem.get(i,(i+j)%origem.Coluna()) + " "); //DEBUG
+               valor -= iteracao[(k+1)%2].get((i+j)%origem.Coluna(), 0) * origem.get(i,(i+j)%origem.Coluna());
+            }
+            System.out.println(" / " + origem.get(i,i)); //DEBUG
+            iteracao[k].set(valor / origem.get(i,i), i, 0);
+            
+            parada.set(Math.abs(iteracao[k].get(i,0)) - Math.abs(iteracao[(k+1)%2].get(i,0)),i,0); //matriz de comparação
          }
-         // i = Math.abs(iteracoes[i].get(0,j)) - Math.abs(iteracoes[(i+1)%2].get(0,j))
-      } while(convergencia.NormaInfinita() / iteracoes[i].NormaInfinita() < 0.05);
+         System.out.println();
 
-      return iteracoes[0];
+         iteracao[k].ExibirMatriz();
+
+         System.out.println();
+         
+         System.out.println("parada= " + parada.NormaInfinita() + " / " + iteracao[k].NormaInfinita() + " = " + parada.NormaInfinita() / iteracao[k].NormaInfinita());
+         System.out.println();
+         System.out.println();
+         //DEBUG
+      }
+      while(parada.NormaInfinita() / iteracao[k].NormaInfinita() > 0.05);
+
+
+      return iteracao[k];
    }
 
 
-   public static double SistemaMatricial(Matriz origem){
+   public static double SistemaMatricial(Matriz origem)
+   {
       double result = 0;
       return result;
    }
