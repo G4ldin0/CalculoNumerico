@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public class Matriz{
    private ArrayList<double[]> matriz = new ArrayList<double[]>();
-   private int coluna;
-   private int linha;
+   private int coluna; //vertical
+   private int linha; //horizontal
 
 
    //CONSTRUTORES
@@ -54,24 +54,14 @@ public class Matriz{
 
    public double[] get(int col){ return matriz.get(col);}
 
-   public boolean set(double value, int col, int row){
-      if(col > coluna || row > linha){
-         return false;
-      } else{
-         double[] setup = new double[linha];
+   public boolean set(double value, int col, int row){      
+      double[] setup = matriz.get(col);
 
-         for(int i = 0; i < coluna; i++)
-         {
-            if(i == row)
-               setup[i] = value;
-            else
-               setup[i] = matriz.get(col)[i];
-            
-         } 
-         matriz.set(col, setup);
+      setup[row] = value;
 
-         return true;
-      }
+      matriz.set(col, setup);
+
+      return true;
    }
 
    public boolean set(double[] value, int col){
@@ -83,19 +73,55 @@ public class Matriz{
       }
    }
 
-   public double Linha() { return linha; }
+   public int Linha() { return linha; }
 
-   public double Coluna() { return coluna; }
+   public int Coluna() { return coluna; }
 
    public void ExibirMatriz(){
       System.out.println("Matriz: ");
       System.out.println("[");
-      for(int i = 0; i < matriz.size(); i++){
-         for(int j = 0; j < matriz.get(i).length; j++){
+      for(int i = 0; i < coluna; i++){
+         for(int j = 0; j < linha; j++){
             System.out.print(matriz.get(i)[j] + ", ");
          }
          System.out.println();
       }
       System.out.println("]");
+   }
+
+   public double NormaInfinita(){
+      double value = 0;
+
+      if(linha == 1)
+      {
+         int i = 1;
+         value = Math.abs(matriz.get(0)[0]);
+         do{
+            value = Math.max(value, Math.abs(matriz.get(i)[0]));
+            i++;
+         }
+         while(i < coluna);
+      } 
+      else 
+      {
+
+         for(int j = 0; j < linha; j++){
+            value += matriz.get(0)[j];
+         }
+         
+         for(int i = 0; i < coluna; i++)
+         {
+         double placeholder = 0;
+            for(int j = 1; j < linha; j++){
+               placeholder += matriz.get(i)[j];
+            }
+
+         value = Math.max(value, placeholder);
+
+         }
+
+      }
+
+      return value;
    }
 }
