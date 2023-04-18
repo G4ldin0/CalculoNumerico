@@ -99,8 +99,23 @@ public class OperacoesMatriciais{
       return retorno;
    }
 
+   
    public static double SistemaMatricial(Matriz origem){
       double result = 0;
       return result;
    }
+
+
+
+   public static double normaEuclidiana(Matriz origem){
+      double retorno = 0;
+      for(int i = 0; i < origem.Linha(); i++){
+         for(int j = 0; j < origem.Coluna(); j++){
+            retorno += origem.get(i,j);
+         }
+      }
+      retorno = Math.sqrt(retorno);
+      return retorno;
+   }
+
 }
