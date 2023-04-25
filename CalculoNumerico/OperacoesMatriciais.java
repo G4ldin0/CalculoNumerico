@@ -102,18 +102,18 @@ public class OperacoesMatriciais{
    }
 
 
-   public static Matriz GaussJacobi(Matriz origem){
+   public static Matriz GaussJacobi(Matriz origem, double epsilon){
 
       Matriz[] iteracao = new Matriz[]{new Matriz(1,origem.Coluna()), new Matriz(1,origem.Coluna())};
       Matriz parada = new Matriz(1, origem.Coluna());
 
       //iteração 0
-      iteracao[0].set(origem.get(0,3) / origem.get(0,0), 0,0);
-      iteracao[0].set(origem.get(1,3) / origem.get(1,1), 1,0);
-      iteracao[0].set(origem.get(2,3) / origem.get(2,2), 2,0);
+      int k = 0;
+
+      for(int i = 0; i < origem.Coluna(); i++)
+         iteracao[k].set(origem.get(i,origem.Linha()-1) / origem.get(i,i), i, 0);
 
       //iterações seguintes
-      int k = 0;
       do
       {
          k = (k+1)%2;
@@ -144,12 +144,63 @@ public class OperacoesMatriciais{
          System.out.println();
          //DEBUG
       }
-      while(parada.NormaInfinita() / iteracao[k].NormaInfinita() > 0.05);
+      while(parada.NormaInfinita() / iteracao[k].NormaInfinita() > epsilon);
 
 
       return iteracao[k];
    }
 
+   public static Matriz GaussSeidel(Matriz origem, double epsilon){
+
+      Matriz[] iteracao = new Matriz[]{new Matriz(1,origem.Coluna()), new Matriz(1,origem.Coluna())};
+      Matriz parada = new Matriz(1, origem.Coluna());
+
+      //iteração 0
+      int k = 0;
+
+      for(int i = 0; i < origem.Coluna(); i++)
+         iteracao[k].set(origem.get(i,origem.Linha()-1) / origem.get(i,i), i, 0);
+
+
+         // ( k + (Math.ceil( j / origem.Coluna() )) ) % 2
+      
+      //iterações seguintes
+      do
+      {
+         k = (k+1)%2;
+
+         for(int i = 0; i < origem.Coluna(); i++) //formação da nova matriz
+         {
+            double valor = origem.get(i,origem.Coluna() );
+
+            System.out.print(valor); //DEBUG
+            for(int j = 1; j < origem.Coluna(); j++)
+            {
+               System.out.print(" - " + iteracao[(k+((i+j)%origem.Coluna() > i ? 1 : 0))%2].get((i+j)%origem.Coluna(), 0) + " * " + origem.get(i,(i+j)%origem.Coluna()) + " "); //DEBUG
+               //System.out.print(" - (" + ((i+j)%origem.Coluna() > i ? 1 : 0) + "," + (i+j)%origem.Coluna() + ") + " + origem.get(i, (i+j)%origem.Coluna()) + " ");
+               valor -= iteracao[(k+((i+j)%origem.Coluna() > i ? 1 : 0))%2].get((i+j)%origem.Coluna(), 0) * origem.get(i,(i+j)%origem.Coluna());
+            }
+            System.out.println(" / " + origem.get(i,i)); //DEBUG
+            iteracao[k].set(valor / origem.get(i,i), i, 0);
+            
+            parada.set(Math.abs(iteracao[k].get(i,0)) - Math.abs(iteracao[(k+1)%2].get(i,0)),i,0); //matriz de comparação
+         }
+         System.out.println();
+
+         iteracao[k].ExibirMatriz();
+
+         System.out.println();
+         
+         System.out.println("parada= " + parada.NormaInfinita() + " / " + iteracao[k].NormaInfinita() + " = " + parada.NormaInfinita() / iteracao[k].NormaInfinita());
+         System.out.println();
+         System.out.println();
+         //DEBUG
+      }
+      while(parada.NormaInfinita() / iteracao[k].NormaInfinita() > epsilon);
+      
+
+      return iteracao[0];
+   }
 
    public static double SistemaMatricial(Matriz origem)
    {
