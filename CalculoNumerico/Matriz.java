@@ -129,6 +129,23 @@ public class Matriz{
 
    }
 
+   public boolean soma(Matriz valor){
+      if(valor.linha != linha || valor.coluna != coluna) return false;
+      else
+      {
+         for(int i = 0; i < coluna; i++)
+         {
+            double[] placeholder = new double[linha];
+            for(int j = 0; j < linha; j++)
+            {
+               placeholder[j] = matriz.get(i)[j] + valor.get(i)[j];
+            }
+            matriz.set(i, placeholder);
+         }
+         return true;
+      }
+   }
+
    public void transpor(){
       //nova ED placeholder
       ArrayList<double[]> placeholder = new ArrayList<double[]>();
